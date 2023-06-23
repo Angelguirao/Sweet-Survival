@@ -13,6 +13,8 @@ class Game {
       this.messages = document.createElement('div');
       this.bloodGlucoseBarContainer = document.createElement('div');
       this.bloodGlucoseBar = document.createElement('div');
+      this.timerElement = document.createElement('div');
+
   
       this.character.id = 'character';
       this.foodItemsContainer.id = 'foodItemsContainer';
@@ -22,6 +24,8 @@ class Game {
       this.messages.id = 'messages';
       this.bloodGlucoseBarContainer.id = 'bloodGlucoseBarContainer';
       this.bloodGlucoseBar.id = 'bloodGlucoseBar';
+      this.timerElement.id = 'timer';
+
   
       this.gameContainer.appendChild(this.character);
       this.gameContainer.appendChild(this.foodItemsContainer);
@@ -30,7 +34,7 @@ class Game {
       this.gameContainer.appendChild(this.progressBar);
       this.gameContainer.appendChild(this.messages);
       this.gameContainer.appendChild(this.bloodGlucoseBar);
-
+      this.gameContainer.appendChild(this.timerElement);
 
       this.foodItems = foodItems;
       this.insulinItems = insulinItems;
@@ -43,8 +47,8 @@ class Game {
         this.initializeFoodItems();
         this.initializeInsulinItems();
         this.initializeBloodGlucoseBar();
+        this.initializeTimer();
 
-        
         // Other initialization steps
       
         // Start the game loop
@@ -118,6 +122,10 @@ class Game {
 
         this.bloodGlucoseBar.style.height = '20px';
         this.bloodGlucoseBar.style.width = `${currentWidth}px`;
+        
+        this.bloodGlucoseBar.style.position = 'absolute';
+        this.bloodGlucoseBar.style.bottom = '-70px';
+
 
         if (this.bloodGlucoseLevelValue < 80) {
             this.bloodGlucoseBar.style.backgroundColor = 'blue';
@@ -130,12 +138,59 @@ class Game {
           } else {
             this.bloodGlucoseBar.style.backgroundColor = 'black'; // Default color if none of the conditions match
           }
-        
-          this.bloodGlucoseBar.style.position = 'absolute';
-          this.bloodGlucoseBar.style.bottom = '-70px';
-
       }
-       
+
+      initializeTimer() {
+        // Set the time limit (in seconds)
+        this.timerElement.style.fontSize = '24px';
+        this.timerElement.style.fontWeight = 'bold';
+        this.timerElement.style.color = '#ffffff';
+        this.timerElement.style.backgroundColor = '#000000';
+        this.timerElement.style.padding = '10px';
+        this.timerElement.style.borderRadius = '5px';
+        this.timerElement.style.position = 'absolute';
+        this.timerElement.style.top = '10px';
+        this.timerElement.style.right = '10px';
+      
+        // Generate a random time limit between 30 seconds and 1 minute (adjust as needed)
+        const minTimeLimit = 30; // Minimum time limit in seconds
+        const maxTimeLimit = 60; // Maximum time limit in seconds
+        const randomTimeLimit = Math.floor(Math.random() * (maxTimeLimit - minTimeLimit + 1)) + minTimeLimit;
+      
+        // Start the timer
+        this.startTime = Date.now();
+        this.timerInterval = setInterval(() => {
+          this.updateTimer();
+        }, 1000);
+      
+        // Start the timer with the generated time limit
+        this.timeLimit = randomTimeLimit;
+      }
+      
+      updateTimer() {
+        // Calculate the elapsed time
+        const currentTime = Date.now();
+        const elapsedTime = Math.floor((currentTime - this.startTime) / 1000);
+      
+        // Calculate the remaining time
+        const remainingTime = this.timeLimit - elapsedTime;
+      
+        // Update the timer element
+        this.timerElement.textContent = `Time: ${remainingTime}s`;
+      
+        // Add a CSS class to the timer element when the time is running out
+        if (remainingTime <= 10) {
+          this.timerElement.classList.add('timer-urgent');
+        } else {
+          this.timerElement.classList.remove('timer-urgent');
+        }
+      
+        // Check if the time limit is reached
+        if (remainingTime <= 0) {
+          this.gameOver();
+        }
+      }
+      
       gameLoop() {
         // Update the game state
         this.update();
@@ -193,17 +248,11 @@ class Game {
     gameOver() {
       // Handle game over condition
     }
-  
-    nextLevel() {
-      // Progress to the next level
-    }
   }
   
   // Character class
   class Character {
     constructor() {
-      // Initialize character properties
-      this.element = document.getElementById('character');
     }
   
     move(direction) {
@@ -261,74 +310,6 @@ class InsulinItem {
     new InsulinItem('Bolus Insulin', 'bolus-insulin.png', 5, 'bolus'),
     // Add more insulin items as needed
   ];
-  
-  // Level class
-  class Level {
-    constructor() {
-      // Initialize level properties
-    }
-  
-    initialize() {
-      // Initialize the level
-    }
-  
-    update() {
-      // Update the level state
-    }
-  
-    checkCollisions() {
-      // Check for collisions
-    }
-  
-    checkLevelCompletion() {
-      // Check if level objectives are met
-    }
-  
-    displayNutritionalInfo(foodItem) {
-      // Display nutritional information of a food item
-    }
-  }
-  
-  // Scoring System class
-  class ScoringSystem {
-    constructor() {
-      // Initialize scoring system properties
-    }
-  
-    calculateScore() {
-      // Calculate the player's score
-    }
-  
-    updateScore() {
-      // Update the score based on player's actions
-    }
-  }
-  
-  // InputManager class
-  class InputManager {
-    constructor() {
-      // Initialize input manager
-    }
-  
-    handleKeyPress(key) {
-      // Handle key press events
-    }
-  }
-  
-  // Timer class
-  class Timer {
-    constructor() {
-      // Initialize timer properties
-    }
-  
-    startTimer() {
-      // Start the timer
-    }
-  
-    checkTimeLimit() {
-      // Check if time limit is reached
-    }
-  }
   
   // Create an instance of the Game class
   const game = new Game();

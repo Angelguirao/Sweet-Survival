@@ -16,7 +16,7 @@ body {
   #gameContainer {
     background-color: #f0f0f0;
     width: 800px;
-    height: 600px;
+    height: 500px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     margin: 0 auto;
