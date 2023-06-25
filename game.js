@@ -1,107 +1,86 @@
-// Game code goes here
-
 // Game class
 class Game {
-    constructor() {
+    constructor(foodItems, insulinItems) {
       // Initialize game components
       this.gameContainer = document.getElementById('gameContainer');
       this.character = document.createElement('div');
-      this.foodItemsContainer = document.createElement('div');
-      this.insulinItemsContainer = document.createElement('div');
       this.bloodGlucoseLevel = document.createElement('div');
-      this.progressBar = document.createElement('div');
-      this.messages = document.createElement('div');
-      this.bloodGlucoseBarContainer = document.createElement('div');
       this.bloodGlucoseBar = document.createElement('div');
       this.timerElement = document.createElement('div');
 
-  
       this.character.id = 'character';
-      this.foodItemsContainer.id = 'foodItemsContainer';
-      this.insulinItemsContainer.id = 'insulinItemsContainer';
       this.bloodGlucoseLevel.id = 'bloodGlucoseLevel';
-      this.progressBar.id = 'progressBar';
-      this.messages.id = 'messages';
-      this.bloodGlucoseBarContainer.id = 'bloodGlucoseBarContainer';
       this.bloodGlucoseBar.id = 'bloodGlucoseBar';
       this.timerElement.id = 'timer';
 
-  
       this.gameContainer.appendChild(this.character);
-      this.gameContainer.appendChild(this.foodItemsContainer);
-      this.gameContainer.appendChild(this.insulinItemsContainer);
       this.gameContainer.appendChild(this.bloodGlucoseLevel);
-      this.gameContainer.appendChild(this.progressBar);
-      this.gameContainer.appendChild(this.messages);
       this.gameContainer.appendChild(this.bloodGlucoseBar);
       this.gameContainer.appendChild(this.timerElement);
 
-      this.foodItems = foodItems;
-      this.insulinItems = insulinItems;
+      this.foodItems = foodItems; // Assign food items to the property
+      this.insulinItems = insulinItems; // Assign insulin items to the property
 
     }
   
-    startGame() {
+      startGame() {
         // Initialize game components
         this.initializeCharacter();
         this.initializeFoodItems();
-        this.initializeInsulinItems();
         this.initializeBloodGlucoseBar();
         this.initializeTimer();
-
-        // Other initialization steps
-      
-        // Start the game loop
-        this.gameLoop();
       }
-      
+
       initializeCharacter() {
         // Set initial character properties and position
         this.character.style.width = '50px';
         this.character.style.height = '50px';
         this.character.style.backgroundColor = 'blue';
         this.character.style.position = 'absolute';
-        this.character.style.left = '0';
-        this.character.style.top = '0';
+        this.character.style.left = Math.floor(Math.random() * (this.gameContainer.offsetWidth - 50)) + 'px';
+        this.character.style.top = Math.floor(Math.random() * (this.gameContainer.offsetHeight - 50)) + 'px';
         // Add event listener for character movement
         document.addEventListener('keydown', (event) => {
           this.characterMovement(event);
-        });
+      });
       }
       
-      initializeFoodItems() {
-        // Generate and position food items for the level
-        for (let i = 0; i < 5; i++) {
-          const randomFoodItem = foodItems[Math.floor(Math.random() * foodItems.length)];
+      initializeFoodItems(maxFoodItems) {
+        const shuffledFoodItems = this.shuffleArray(this.foodItems);
+        const foodItemsToDisplay = shuffledFoodItems.slice(0, maxFoodItems);
+
+        for (let i = 0; i < foodItemsToDisplay.length; i++) {
+          const randomFoodItem = foodItemsToDisplay[i];
           const foodItem = document.createElement('img');
           foodItem.src = randomFoodItem.imageSrc;
           foodItem.style.width = '30px';
           foodItem.style.height = '30px';
-          const positionX = Math.floor(Math.random() * 500); // Adjust as needed
-          const positionY = Math.floor(Math.random() * 300); // Adjust as needed
+          const containerWidth = this.gameContainer.offsetWidth;
+          const containerHeight = this.gameContainer.offsetHeight;
+          const positionX = Math.floor(Math.random() * (containerWidth - 50));
+          const positionY = Math.floor(Math.random() * (containerHeight - 50));
           foodItem.style.position = 'absolute';
           foodItem.style.left = positionX + 'px';
           foodItem.style.top = positionY + 'px';
-          this.foodItems.push(foodItem);
-          this.foodItemsContainer.appendChild(foodItem);
+    
+          // Set data attributes for food properties
+          foodItem.dataset.name = randomFoodItem.name;
+          foodItem.dataset.carbsPer100gr = randomFoodItem.carbsPer100gr;
+          foodItem.dataset.glycemicIndex = randomFoodItem.glycemicIndex;
+    
+          this.foodItems[i] = foodItem;
+          this.gameContainer.appendChild(foodItem);
         }
       }
       
-      initializeInsulinItems() {
-        // Generate and position insulin items for the level
-        for (let i = 0; i < 2; i++) {
-          const randomInsulinItem = insulinItems[Math.floor(Math.random() * insulinItems.length)];
-          const insulinItem = document.createElement('img');
-          insulinItem.src = randomInsulinItem.imageSrc;
-          insulinItem.style.width = '50px';
-          insulinItem.style.height = '50px';
-          const positionX = Math.floor(Math.random() * 500); // Adjust as needed
-          const positionY = Math.floor(Math.random() * 300); // Adjust as needed
-          insulinItem.style.position = 'absolute';
-          insulinItem.style.left = positionX + 'px';
-          insulinItem.style.top = positionY + 'px';
-          this.insulinItemsContainer.appendChild(insulinItem);
+      shuffleArray(array) {
+        // This function randomly shuffles the elements of an array using the Fisher-Yates shuffle algorithm:
+
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
         }
+        return array;
       }
 
       initializeBloodGlucoseBar() {
@@ -141,7 +120,7 @@ class Game {
       }
 
       initializeTimer() {
-        // Set the time limit (in seconds)
+      
         this.timerElement.style.fontSize = '24px';
         this.timerElement.style.fontWeight = 'bold';
         this.timerElement.style.color = '#ffffff';
@@ -151,128 +130,95 @@ class Game {
         this.timerElement.style.position = 'absolute';
         this.timerElement.style.top = '10px';
         this.timerElement.style.right = '10px';
-      
-        // Generate a random time limit between 30 seconds and 1 minute (adjust as needed)
+
+        // Generate a random time limit between 30 seconds and 1 minute
         const minTimeLimit = 30; // Minimum time limit in seconds
         const maxTimeLimit = 60; // Maximum time limit in seconds
         const randomTimeLimit = Math.floor(Math.random() * (maxTimeLimit - minTimeLimit + 1)) + minTimeLimit;
-      
-        // Start the timer
-        this.startTime = Date.now();
-        this.timerInterval = setInterval(() => {
-          this.updateTimer();
-        }, 1000);
-      
-        // Start the timer with the generated time limit
-        this.timeLimit = randomTimeLimit;
-      }
-      
-      updateTimer() {
-        // Calculate the elapsed time
-        const currentTime = Date.now();
-        const elapsedTime = Math.floor((currentTime - this.startTime) / 1000);
-      
-        // Calculate the remaining time
-        const remainingTime = this.timeLimit - elapsedTime;
-      
-        // Update the timer element
-        this.timerElement.textContent = `Time: ${remainingTime}s`;
-      
-        // Add a CSS class to the timer element when the time is running out
-        if (remainingTime <= 10) {
-          this.timerElement.classList.add('timer-urgent');
-        } else {
-          this.timerElement.classList.remove('timer-urgent');
+
+        this.currentTime = randomTimeLimit;
+
+        // Update the timer element with the initial time
+        this.timerElement.innerHTML = this.currentTime;
+
+        // Start the countdown timer
+          this.startCountdown();
+        }
+
+        startCountdown() {
+          this.timerInterval = setInterval(() => {
+            this.currentTime--;
+            this.timerElement.innerHTML = this.currentTime;
+
+        // Check if the time has run out
+            if (this.currentTime === 0) {
+              clearInterval(this.timerInterval);
+              alert('Game Over!');
+            }
+          }, 1000);
         }
       
-        // Check if the time limit is reached
-        if (remainingTime <= 0) {
-          this.gameOver();
+        characterMovement(event) {
+          const step = 10;
+          
+          const containerRect = this.gameContainer.getBoundingClientRect();
+          const containerLeft = containerRect.left;
+          const containerTop = containerRect.top;
+          const containerWidth = containerRect.width;
+          const containerHeight = containerRect.height;
+        
+          const characterRect = this.character.getBoundingClientRect();
+          const characterLeft = characterRect.left - containerLeft;
+          const characterTop = characterRect.top - containerTop;
+        
+          if (event.keyCode === 37 && characterLeft > 0) {
+            this.character.style.left = Math.max(characterLeft - step, 0) + 'px';
+          } else if (event.keyCode === 39 && characterLeft + characterRect.width < containerWidth) {
+            this.character.style.left = Math.min(characterLeft + step, containerWidth - characterRect.width) + 'px';
+          } else if (event.keyCode === 38 && characterTop > 0) {
+            this.character.style.top = Math.max(characterTop - step, 0) + 'px';
+          } else if (event.keyCode === 40 && characterTop + characterRect.height < containerHeight) {
+            this.character.style.top = Math.min(characterTop + step, containerHeight - characterRect.height) + 'px';
+          }
+        
+          // Check for collision with food items
+          this.checkCollisionWithFoodItems();
+        }
+      
+      checkCollisionWithFoodItems() {
+        const characterRect = this.character.getBoundingClientRect();
+    
+        for (let i = 0; i < this.foodItems.length; i++) {
+          const foodItem = this.foodItems[i];
+          const foodItemRect = foodItem.getBoundingClientRect();
+    
+          if (
+            characterRect.top < foodItemRect.bottom &&
+            characterRect.bottom > foodItemRect.top &&
+            characterRect.left < foodItemRect.right &&
+            characterRect.right > foodItemRect.left
+          ) {
+            // Collision detected
+            this.displayFoodProperties(foodItem);
+            this.gameContainer.removeChild(foodItem);
+            this.foodItems.splice(i, 1);
+            break;
+          }
         }
       }
       
-      gameLoop() {
-        // Update the game state
-        this.update();
-      
-        // Render the game visuals
-        this.render();
-      
-        // Check for level completion or game over
-        if (this.checkLevelCompletion()) {
-          this.nextLevel();
-        } else if (this.checkGameOver()) {
-          this.gameOver();
-        } else {
-          // Continue the game loop
-          requestAnimationFrame(() => {
-            this.gameLoop();
-          });
-        }
+      displayFoodProperties(foodItem) {
+        const name = foodItem.dataset.name;
+        const carbsPer100gr = foodItem.dataset.carbsPer100gr;
+        const glycemicIndex = foodItem.dataset.glycemicIndex;
+    
+        alert(`Food: ${name}\nCarbs per 100g: ${carbsPer100gr}\nGlycemic Index: ${glycemicIndex}`);
       }
-      
-      characterMovement(event) {
-        const speed = 10;
-        const containerWidth = this.gameContainer.offsetWidth;
-        const containerHeight = this.gameContainer.offsetHeight;
-        const characterWidth = this.character.offsetWidth;
-        const characterHeight = this.character.offsetHeight;
-        const characterPositionX = parseInt(this.character.style.left);
-        const characterPositionY = parseInt(this.character.style.top);
-      
-        let newPositionX = characterPositionX;
-        let newPositionY = characterPositionY;
-      
-        if (event.key === 'ArrowUp') {
-          newPositionY = Math.max(characterPositionY - speed, 0);
-        } else if (event.key === 'ArrowDown') {
-          newPositionY = Math.min(characterPositionY + speed, containerHeight - characterHeight);
-        } else if (event.key === 'ArrowLeft') {
-          newPositionX = Math.max(characterPositionX - speed, 0);
-        } else if (event.key === 'ArrowRight') {
-          newPositionX = Math.min(characterPositionX + speed, containerWidth - characterWidth);
-        }
-      
-        this.character.style.left = newPositionX + 'px';
-        this.character.style.top = newPositionY + 'px';
-      }
-  
-    update() {
-      // Update game state
-    }
-  
-    render() {
-      // Render game visuals
-    }
-  
-    gameOver() {
-      // Handle game over condition
-    }
   }
   
   // Character class
   class Character {
     constructor() {
-    }
-  
-    move(direction) {
-      // Move the character
-    }
-  
-    collideWithFood(foodItem) {
-      // Handle collision with food item
-    }
-  
-    collideWithInsulin(insulinItem) {
-      // Handle collision with insulin item
-    }
-  
-    eatFood(portions) {
-      // Process food consumption
-    }
-  
-    administerInsulin(units, type) {
-      // Process insulin administration
     }
   }
   
@@ -288,8 +234,6 @@ class FoodItem {
   
   // Create sample food items
   const foodItems = [
-    new FoodItem('Apple', 'istockphoto-1141529240-612x612.jpg', 14, 40),
-    new FoodItem('Banana', 'descarga.jpg', 22, 52),
     new FoodItem('Orange', 'orange photo.jpg', 11, 42),
     // Add more food items as needed
   ];
@@ -312,7 +256,7 @@ class InsulinItem {
   ];
   
   // Create an instance of the Game class
-  const game = new Game();
+  const game = new Game(foodItems, insulinItems);
   
   // Start the game
   game.startGame();
