@@ -23,8 +23,15 @@ body {
   }
 
   #bloodGlucoseContainer {
-    width: 800px;
+    display: flex;
+    width: 1000px;
     height: 200px;
-    position: absolute;
     margin-top: 100px;
   }
+
+  #minBloodGlucoseTarget {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+   
