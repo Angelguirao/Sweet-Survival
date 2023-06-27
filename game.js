@@ -4,7 +4,6 @@ class Game {
       // Initialize game components
       this.gameContainer = document.getElementById('gameContainer');
       this.bloodGlucoseContainer = document.getElementById('bloodGlucoseContainer');
-      this.character = document.createElement('div');
       this.timerElement = document.createElement('div');
       this.minBloodGlucoseTarget = document.createElement('div');
       this.maxBloodGlucoseTarget = document.createElement('div');
@@ -12,7 +11,6 @@ class Game {
 
       // Set the IDs and styles for the game components
 
-      this.character.id = 'character';
       this.timerElement.id = 'timer';
       this.minBloodGlucoseTarget.id = 'minBloodGlucoseTarget';
       this.maxBloodGlucoseTarget.id = 'maxBloodGlucoseTarget';
@@ -20,7 +18,6 @@ class Game {
 
       // Append the game components to the respective containers
 
-      this.gameContainer.appendChild(this.character);
       this.gameContainer.appendChild(this.timerElement);
       this.bloodGlucoseContainer.appendChild(this.minBloodGlucoseTarget);
       this.bloodGlucoseContainer.appendChild(this.maxBloodGlucoseTarget);
@@ -36,42 +33,102 @@ class Game {
       this.startButton = null; // Store reference to the start button
       this.timerInterval = null; // Store reference to the timer interval
       this.bloodGlucoseUpdateInterval = null; // Store reference to the blood glucose update interval
+      this.imageFlag = 1;
+      this.gameContainer.style.display = 'none'; // Set the initial display to 'none'
+      this.collisionDetected = false;
+      this.increasingRate = 0;
+      this.currentImpact = 0;
     }
 
-      // Function to start the game
+    showInstructions() {
+       // Create a container for the instructions
+      this.instructionsContainer = document.createElement('div');
+      this.instructionsContainer.id = 'instructions';
+      this.instructionsContainer.style.backgroundColor = '#f9f9f9';
+      this.instructionsContainer.style.border = '1px solid #ccc';
+      this.instructionsContainer.style.padding = '20px';
+      this.instructionsContainer.style.borderRadius = '5px';
+      this.instructionsContainer.style.textAlign = 'center';
+      this.instructionsContainer.style.margin = '20px auto';
+      this.instructionsContainer.style.maxWidth = '500px';
+  
+      // Create the content for the instructions
+      const instructionsText = document.createElement('p');
+      instructionsText.innerHTML = "Welcome!<br><br> In this game, you will take control of a character living with diabetes.<br><br> The main objective is to collect healthy food items while avoiding unhealthy ones and administering insulin when necessary to maintain the character's blood glucose within a target range. <br><br>  If you successfully maintain yourself within the range until the countdown ends, you win!<br><br>If you go out of range, you lose!<br><br> Are you ready, sweety?";
+      instructionsText.style.marginBottom = '20px';
+      instructionsText.style.fontSize = '24px'; // Increase the font size
+
+      // Append the instructions content to the container
+      this.instructionsContainer.appendChild(instructionsText);
+  
+      // Add the instructions container to the body
+      document.body.appendChild(this.instructionsContainer);
+    }
+  
+    // Function to create the start button
+      createStartButton() {
+        this.startButton = document.createElement('button');
+        this.startButton.textContent = 'Yes!';
+        this.startButton.style.fontSize = '20px';
+        this.startButton.style.padding = '10px 20px';
+        this.startButton.style.marginTop = '20px';
+        this.startButton.style.border = 'none';
+        this.startButton.style.backgroundColor = '#4caf50';
+        this.startButton.style.color = '#fff';
+        this.startButton.style.cursor = 'pointer';
+        this.startButton.style.borderRadius = '5px';
+  
+      // Append the start button to the instructions container
+      this.instructionsContainer.appendChild(this.startButton);
+    }
+  
+      // Function to start the game  
       startGame() {
+        // Show the instructions
+        this.showInstructions();
+        
         // Create and add the start button
         this.createStartButton();
-        this.gameContainer.appendChild(this.startButton);
 
         // Add event listener to start button
         this.startButton.addEventListener('click', () => {
           
           // Remove the start button
-          this.gameContainer.removeChild(this.startButton);
+          this.instructionsContainer.removeChild(this.startButton);
+
+          // Remove the instructions container
+          document.body.removeChild(this.instructionsContainer);
+
+           // Show the game container
+          this.gameContainer.style.display = 'block';
           
           // Initialize game components
           this.initializeCharacter();
           this.initializeBloodGlucoseBar();
           this.initializeTimer();
-          this.initializeFoodItems(5); // Set the maximum number of food items to display
-          this.initializeInsulinItems(5); // Set the maximum number of insulin items to display
+          this.initializeFoodItems(100); // Set the maximum number of food items to display
+          this.initializeInsulinItems(100); // Set the maximum number of insulin items to display
         });
       }
 
       initializeCharacter() {
-        // Set initial character properties and position
-        this.character.style.width = '50px';
-        this.character.style.height = '50px';
-        this.character.style.backgroundColor = 'blue';
+        // Create an <img> element for the character
+        this.character = document.createElement('img');
+        this.character.src = 'down_1.png'; // Set the initial image
+        this.character.style.width = '80px';
+        this.character.style.height = '80px';
         this.character.style.position = 'absolute';
         this.character.style.left = Math.floor(Math.random() * (this.gameContainer.offsetWidth - 50)) + 'px';
         this.character.style.top = Math.floor(Math.random() * (this.gameContainer.offsetHeight - 50)) + 'px';
+    
+        // Add the character element to the game container
+        this.gameContainer.appendChild(this.character);
+    
         // Add event listener for character movement
         document.addEventListener('keydown', (event) => {
-          this.characterMovement(event);
-      });
-      }
+            this.characterMovement(event);
+        });
+    }    
 
       initializeBloodGlucoseBar() {
         // Set the initial blood glucose level randomly within the desired range
@@ -98,23 +155,42 @@ class Game {
         this.bloodGlucoseContainer.appendChild(this.bloodGlucoseLevelText);
 
           // Create the blood glucose min and max targets
+          this.minBloodGlucoseTarget.style.width = '50px';
+          this.minBloodGlucoseTarget.style.height = '50px';
+          this.minBloodGlucoseTarget.style.backgroundColor = 'white';
+          this.minBloodGlucoseTarget.style.color = 'red';
+          this.minBloodGlucoseTarget.style.fontSize = '50px';
+          this.minBloodGlucoseTarget.style.fontWeight = 'bold';
 
-        this.minBloodGlucoseTarget.style.width = '50px';
-        this.minBloodGlucoseTarget.style.height = '50px';
-        this.minBloodGlucoseTarget.style.backgroundColor = 'white';
-        this.minBloodGlucoseTarget.style.color = 'red';
-        this.minBloodGlucoseTarget.style.fontSize = '30px';
-        this.minBloodGlucoseTarget.style.fontWeight = 'bold';
+          this.maxBloodGlucoseTarget.style.width = '50px';
+          this.maxBloodGlucoseTarget.style.height = '50px';
+          this.maxBloodGlucoseTarget.style.backgroundColor = 'white';
+          this.maxBloodGlucoseTarget.style.color = 'red';
+          this.maxBloodGlucoseTarget.style.fontSize = '50px';
+          this.maxBloodGlucoseTarget.style.fontWeight = 'bold';
 
-        this.maxBloodGlucoseTarget.style.width = '50px';
-        this.maxBloodGlucoseTarget.style.height = '50px';
-        this.maxBloodGlucoseTarget.style.backgroundColor = 'white';
-        this.maxBloodGlucoseTarget.style.color = 'red';
-        this.maxBloodGlucoseTarget.style.fontSize = '30px';
-        this.maxBloodGlucoseTarget.style.fontWeight = 'bold';
+          // Calculate the displayed minimum and maximum values
+          const displayedMinValue = this.minBloodGlucoseLevel;
+          const displayedMaxValue = this.maxBloodGlucoseLevel;
 
-        this.minBloodGlucoseTarget.innerHTML = this.minBloodGlucoseLevel;
-        this.maxBloodGlucoseTarget.innerHTML = this.maxBloodGlucoseLevel;
+          // Create text nodes for the minimum and maximum values with smaller font size
+          const minText = document.createElement('span');
+          minText.style.fontSize = '20px';
+          minText.style.marginBottom = '5px';
+          minText.textContent = `${displayedMinValue}(min.)`;
+
+          const maxText = document.createElement('span');
+          maxText.style.fontSize = '20px';
+          maxText.style.marginBottom = '5px';
+          maxText.textContent = `${displayedMaxValue}(max.)`;
+
+          // Clear the existing content
+          this.minBloodGlucoseTarget.innerHTML = '';
+          this.maxBloodGlucoseTarget.innerHTML = '';
+
+          // Append the text nodes to the min and max targets
+          this.minBloodGlucoseTarget.appendChild(minText);
+          this.maxBloodGlucoseTarget.appendChild(maxText);
 
          // Position the blood glucose min and max targets
         this.positionBloodGlucoseTargets();
@@ -140,7 +216,7 @@ class Game {
         this.minBloodGlucoseTarget.style.top = `${targetTop}px`;
       
         // Position the max target to the right of the blood glucose container
-        const maxTargetLeft = barLeft + barWidth;
+        const maxTargetLeft = barLeft + barWidth -40;
         this.maxBloodGlucoseTarget.style.position = 'absolute';
         this.maxBloodGlucoseTarget.style.left = `${maxTargetLeft}px`;
         this.maxBloodGlucoseTarget.style.top = `${targetTop}px`;
@@ -172,6 +248,9 @@ class Game {
         const barRight = this.bloodGlucoseBar.offsetLeft + currentWidth;
         const textLeft = barRight + 10; // Add some extra spacing
 
+        // Update the blood glucose level text
+        this.bloodGlucoseLevelText.innerHTML = `<span class="blood-glucose-value">${this.bloodGlucoseLevelValue}</span><span class="blood-glucose-unit">  (your actual blood glucose in mg/dl)</span>`;
+
         this.bloodGlucoseLevelText.style.position = 'absolute';
         this.bloodGlucoseLevelText.style.left = `${textLeft}px`;
         this.bloodGlucoseLevelText.style.top = this.bloodGlucoseBar.offsetTop + 'px';
@@ -181,10 +260,10 @@ class Game {
         // Randomly select whether to increase or decrease the blood glucose level
         const increase = Math.random() < 0.5;
       
-        // Generate a random fluctuation rate between 1 and 10
+        // Generate a random fluctuation rate between 1 and 5
         const minFluctuationRate = 1;
-        const maxFluctuationRate = 10;
-        const fluctuationRate = Math.floor(Math.random() * (maxFluctuationRate - minFluctuationRate + 1)) + minFluctuationRate;
+        const maxFluctuationRate = 3;
+        const fluctuationRate = Math.round(Math.random() * (maxFluctuationRate - minFluctuationRate + 1)) + minFluctuationRate;
       
         // Update the blood glucose level based on the stored direction
         if (this.bloodGlucoseDirection === 'increase') {
@@ -296,6 +375,8 @@ class Game {
             foodItem.dataset.name = randomFoodItem.name;
             foodItem.dataset.totalCarbs = randomFoodItem.totalCarbs;
             foodItem.dataset.glycemicIndex = randomFoodItem.glycemicIndex;
+            foodItem.dataset.imageSrc = randomFoodItem.imageSrc;
+
       
             this.foodItems[i] = foodItem;
             this.gameContainer.appendChild(foodItem);
@@ -311,8 +392,40 @@ class Game {
           }
           return array;
         }
+
+        initializeInsulinItems(maxInsulinItems) {
+          const shuffledInsulinItems = this.shuffleArray(this.insulinItems);
+          const insulinItemsToDisplay = shuffledInsulinItems.slice(0, maxInsulinItems);
       
+          for (let i = 0; i < insulinItemsToDisplay.length; i++) {
+            const randomInsulinItem = insulinItemsToDisplay[i];
+            const insulinItem = document.createElement('img');
+            insulinItem.src = randomInsulinItem.imageSrc;
+            insulinItem.style.width = '30px';
+            insulinItem.style.height = '30px';
+            const containerWidth = this.gameContainer.offsetWidth;
+            const containerHeight = this.gameContainer.offsetHeight;
+            const positionX = Math.floor(Math.random() * (containerWidth - 50));
+            const positionY = Math.floor(Math.random() * (containerHeight - 50));
+            insulinItem.style.position = 'absolute';
+            insulinItem.style.left = positionX + 'px';
+            insulinItem.style.top = positionY + 'px';
+      
+            // Set data attributes for food properties
+            insulinItem.dataset.name = randomInsulinItem.name;
+            insulinItem.dataset.type = randomInsulinItem.type;
+            insulinItem.dataset.imageSrc = randomInsulinItem.imageSrc;
+
+            this.insulinItems[i] = insulinItem;
+            this.gameContainer.appendChild(insulinItem);
+          }
+        }
+
         characterMovement(event) {
+          if (this.collisionDetected) {
+            return; // Exit the function if collision is detected
+          }
+          
           const step = 10;
           
           const containerRect = this.gameContainer.getBoundingClientRect();
@@ -324,22 +437,57 @@ class Game {
           const characterRect = this.character.getBoundingClientRect();
           const characterLeft = characterRect.left - containerLeft;
           const characterTop = characterRect.top - containerTop;
-        
-          if (event.keyCode === 37 && characterLeft > 0) {
-            this.character.style.left = Math.max(characterLeft - step, 0) + 'px';
-          } else if (event.keyCode === 39 && characterLeft + characterRect.width < containerWidth) {
-            this.character.style.left = Math.min(characterLeft + step, containerWidth - characterRect.width) + 'px';
-          } else if (event.keyCode === 38 && characterTop > 0) {
-            this.character.style.top = Math.max(characterTop - step, 0) + 'px';
-          } else if (event.keyCode === 40 && characterTop + characterRect.height < containerHeight) {
-            this.character.style.top = Math.min(characterTop + step, containerHeight - characterRect.height) + 'px';
+
+          // Toggle the image flag between 1 and 2
+          if (this.imageFlag === 1) {
+            this.imageFlag = 2;
+          } else {
+            this.imageFlag = 1;
           }
+        
+        if (event.keyCode === 37 && characterLeft > 0) {
+          if (this.imageFlag === 1) {
+              this.character.src = 'left_2.png';
+          } else {
+              this.character.src = 'left_1.png';
+          }
+          this.character.style.left = Math.max(characterLeft - step, 0) + 'px';
+      } else if (event.keyCode === 39 && characterLeft + characterRect.width < containerWidth) {
+          if (this.imageFlag === 1) {
+              this.character.src = 'right_1.png';
+          } else {
+              this.character.src = 'right_2.png';
+          }
+          this.character.style.left = Math.min(characterLeft + step, containerWidth - characterRect.width) + 'px';
+      } else if (event.keyCode === 38 && characterTop > 0) {
+          if (this.imageFlag === 1) {
+              this.character.src = 'up_1.png';
+          } else {
+              this.character.src = 'up_2.png';
+          }
+          this.character.style.top = Math.max(characterTop - step, 0) + 'px';
+      } else if (event.keyCode === 40 && characterTop + characterRect.height < containerHeight) {
+          if (this.imageFlag === 1) {
+              this.character.src = 'down_1.png';
+          } else {
+              this.character.src = 'down_2.png';
+          }
+          this.character.style.top = Math.min(characterTop + step, containerHeight - characterRect.height) + 'px';
+      }
         
           // Check for collision with food items
           this.checkCollisionWithFoodItems();
+
+          // Check for collision with food items
+          this.checkCollisionWithInsulinItems();
         }
       
       checkCollisionWithFoodItems() {
+        
+        if (this.collisionDetected) {
+          return; // Exit the function if collision is detected
+        }
+        
         const characterRect = this.character.getBoundingClientRect();
     
         for (let i = 0; i < this.foodItems.length; i++) {
@@ -353,6 +501,8 @@ class Game {
             characterRect.right > foodItemRect.left
           ) {
             // Collision detected
+            this.collisionDetected = true;
+
             this.displayFoodProperties(foodItem);
             this.gameContainer.removeChild(foodItem);
             this.foodItems.splice(i, 1);
@@ -360,6 +510,33 @@ class Game {
           }
         }
       }
+
+      checkCollisionWithInsulinItems() {
+      if (this.collisionDetected) {
+        return; // Exit the function if collision is detected
+      }
+      const characterRect = this.character.getBoundingClientRect();
+
+      for (let i = 0; i < this.insulinItems.length; i++) {
+        const insulinItem = this.insulinItems[i];
+        const insulinItemRect = insulinItem.getBoundingClientRect();
+
+        if (
+          characterRect.top < insulinItemRect.bottom &&
+          characterRect.bottom > insulinItemRect.top &&
+          characterRect.left < insulinItemRect.right &&
+          characterRect.right > insulinItemRect.left
+        ) {
+          // Collision detected
+          this.collisionDetected = true;
+
+          this.displayInsulinProperties(insulinItem);
+          this.gameContainer.removeChild(insulinItem);
+          this.insulinItems.splice(i, 1);
+          break;
+        }
+      }
+    }
 
       displayFoodProperties(foodItem) {
         const name = foodItem.dataset.name;
@@ -388,6 +565,22 @@ class Game {
         glycemic.style.marginTop = '0';
         glycemic.textContent = `Glycemic Index: ${glycemicIndex}`;
 
+        // Information icon for carbohydrates
+        const carbsInfoIcon = document.createElement('span');
+        carbsInfoIcon.innerHTML = '&#9432;';
+        carbsInfoIcon.style.marginLeft = '5px';
+        carbsInfoIcon.style.cursor = 'help';
+        carbsInfoIcon.title = 'Each gram of carbohydrates raises blood sugar levels by 5mg/dl.';
+
+        // Information icon for glycemic index
+        const glycemicInfoIcon = document.createElement('span');
+        glycemicInfoIcon.innerHTML = '&#9432;';
+        glycemicInfoIcon.style.marginLeft = '5px';
+        glycemicInfoIcon.style.cursor = 'help';
+        glycemicInfoIcon.title = 'The glycemic index (GI) is a value assigned to foods based on how quickly and how high those foods cause increases in blood glucose levels. Foods low on the glycemic index scale (<55) tend to release glucose slowly and steadily. Foods high on the glycemic index (>70) release glucose rapidly.';
+
+        carbs.appendChild(carbsInfoIcon);
+        glycemic.appendChild(glycemicInfoIcon);
         alertContent.appendChild(title);
         alertContent.appendChild(foodName);
         alertContent.appendChild(carbs);
@@ -422,15 +615,9 @@ class Game {
           dialog.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.2)';
           dialog.style.padding = '20px';
 
-          
-          dialog.innerHTML = `
-          <h2 style="margin-top: 0; margin-bottom: 10px;">Food Item</h2>
-          <p style="margin-top: 0;">Name: ${name}</p>
-          <p style="margin-top: 0;">Total Carbs: ${totalCarbs}</p>
-          <p style="margin-top: 0;">Glycemic Index: ${glycemicIndex}</p>
-        `;
+          dialog.appendChild(alertContent);
         
-        const eatButton = document.createElement('button');
+          const eatButton = document.createElement('button');
           eatButton.textContent = 'Eat';
           eatButton.style.backgroundColor = '#ffffff';
           eatButton.style.border = '1px solid #000000';
@@ -442,26 +629,24 @@ class Game {
             const glycemicIndexIntake = parseInt(glycemicIndex);
           
             const totalImpact = totalCarbsIntake * 5;
-            let increasingRate;
-          
+
             if (glycemicIndexIntake < 55) {
-              increasingRate = 1;
+              this.increasingRate = 1;
             } else if (glycemicIndexIntake >= 56 && glycemicIndexIntake <= 69) {
-              increasingRate = 0.5;
+              this.increasingRate = 2;
             } else if (glycemicIndexIntake > 70) {
-              increasingRate = 0.2;
+              this.increasingRate = 3;
             }
           
-            let currentImpact = 0;
             const interval = setInterval(() => {
-              if (currentImpact >= totalImpact || this.currentTime === 0 ||
+              if (this.currentImpact >= totalImpact || this.currentTime === 0 ||
                 (this.bloodGlucoseLevelValue < 70 || this.bloodGlucoseLevelValue > 180)) {
                 clearInterval(interval);
                 return;
               }
           
-              this.bloodGlucoseLevelValue += increasingRate;
-              currentImpact += increasingRate;
+              this.bloodGlucoseLevelValue += this.increasingRate;
+              this.currentImpact += this.increasingRate;
           
               // Update the blood glucose level text and bar
               this.updateBloodGlucoseBar();
@@ -469,6 +654,9 @@ class Game {
           
             // Remove the modal dialog
             document.body.removeChild(modal);
+
+            this.collisionDetected = false;
+
           });
 
         const closeButton = document.createElement('button');
@@ -479,8 +667,8 @@ class Game {
           closeButton.style.padding = '10px 20px';
           closeButton.style.cursor = 'pointer';
           closeButton.addEventListener('click', () => {
-            this.discardFoodItem(foodItem); // Call the discardFoodItem function
             document.body.removeChild(modal);
+            this.collisionDetected = false;
         });
           
         dialog.appendChild(eatButton);
@@ -489,24 +677,197 @@ class Game {
         document.body.appendChild(modal);
       }
 
-      discardFoodItem(foodItem) {
-        this.gameContainer.appendChild(foodItem); // Reinsert the food item into the game container
-        this.foodItems.push(foodItem); // Add the food item back to the foodItems array
-      }
-
-        // Function to create the start button
-        createStartButton() {
-          this.startButton = document.createElement('button');
-          this.startButton.textContent = 'Start';
-          this.startButton.style.fontSize = '20px';
-          this.startButton.style.padding = '10px 20px';
-          this.startButton.style.marginTop = '20px';
-          this.startButton.style.position = 'absolute';
-          this.startButton.style.left = '50%';
-          this.startButton.style.top = '50%';
-          this.startButton.style.transform = 'translate(-50%, -50%)';
-        }
+      displayInsulinProperties(insulinItem) {
+        const name = insulinItem.dataset.name;
+        const type = insulinItem.dataset.type;
       
+        const alertContent = document.createElement('div');
+        alertContent.style.fontFamily = 'Arial, sans-serif';
+        alertContent.style.fontSize = '18px';
+        alertContent.style.padding = '10px';
+      
+        const title = document.createElement('h2');
+        title.style.marginTop = '0';
+        title.style.marginBottom = '10px';
+        title.textContent = 'Insulin Item';
+      
+        const insulinName = document.createElement('p');
+        insulinName.style.marginTop = '0';
+        insulinName.textContent = `Name: ${name}`;
+      
+        const insulinType = document.createElement('p');
+        insulinType.style.marginTop = '0';
+        insulinType.textContent = `Type: ${type}`;
+
+         // Information icon for insulin type
+         const insulinTypeIcon = document.createElement('span');
+         insulinTypeIcon.innerHTML = '&#9432;';
+         insulinTypeIcon.style.marginLeft = '5px';
+         insulinTypeIcon.style.cursor = 'help';
+         insulinTypeIcon.title = 'Rapid-acting insulin works quickly and for a few hours to help prevent high blood sugar after meals. Long-acting insulin takes longer to start working but provides a baseline level of insulin for most of the day.';
+      
+        alertContent.appendChild(title);
+        alertContent.appendChild(insulinName);
+        alertContent.appendChild(insulinType);
+        alertContent.appendChild(insulinTypeIcon);
+      
+        const alertStyles = `
+          background-color: #ffffff;
+          border: 2px solid #000000;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+          padding: 20px;
+          font-family: Arial, sans-serif;
+          font-size: 18px;
+        `;
+      
+        // Create the modal dialog elements
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+      
+        const dialog = document.createElement('div');
+        dialog.style.maxWidth = '500px';
+        dialog.style.background = 'white';
+        dialog.style.borderRadius = '5px';
+        dialog.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.2)';
+        dialog.style.padding = '20px';
+      
+        dialog.appendChild(alertContent);
+
+        const useButton = document.createElement('button');
+        useButton.textContent = 'Use';
+        useButton.style.backgroundColor = '#ffffff';
+        useButton.style.border = '1px solid #000000';
+        useButton.style.borderRadius = '5px';
+        useButton.style.padding = '10px 20px';
+        useButton.style.cursor = 'pointer';
+        useButton.addEventListener('click', () => {
+              
+        // Create the container for the dosage insulin input
+
+        const container = document.createElement('div');
+        container.style.padding = '20px';
+        container.style.backgroundColor = '#f5f5f5';
+        container.style.border = '1px solid #ccc';
+        container.style.borderRadius = '5px';
+        container.style.textAlign = 'center';
+        container.style.position = 'absolute';
+        container.style.top = '50%';
+        container.style.left = '50%';
+        container.style.transform = 'translate(-50%, -50%)';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+
+
+        const heading = document.createElement('h2');
+        heading.textContent = 'Insulin Dosage';
+
+        const inputLabel = document.createElement('label');
+        inputLabel.textContent = 'Enter the number of units*:';
+        inputLabel.style.marginRight = '10px';
+
+        const inputField = document.createElement('input');
+        inputField.type = 'number';
+        inputField.style.marginRight = '10px';
+
+        const description = document.createElement('p');
+        description.textContent = '*One unit of insulin is needed to drop the blood glucose by 50 mg/dl';
+        description.style.marginTop = '10px';
+        description.style.fontSize = '14px';
+
+        const submitButton = document.createElement('button');
+        submitButton.textContent = 'Inject';
+        submitButton.style.marginLeft = '10px';
+        submitButton.style.margin = '0 auto';
+
+        const errorLabel = document.createElement('p');
+        errorLabel.style.color = 'red';
+
+        container.appendChild(heading);
+        container.appendChild(inputLabel);
+        container.appendChild(inputField);
+        container.appendChild(description);
+        container.appendChild(submitButton);
+        container.appendChild(errorLabel);
+
+        this.gameContainer.appendChild(container);
+
+        // Function to validate the input value
+        function validateInput(value) {
+          const dosage = parseInt(value);
+          if (isNaN(dosage) || dosage < 1) {
+            return false;
+          }
+          return true;
+          }
+        
+        // Define the logic for the submit button click event
+        submitButton.addEventListener('click', () => {
+          const dosageInput = inputField.value;
+
+          if (validateInput(dosageInput)) {
+            //insulin dosage logic
+
+            container.parentNode.removeChild(container);
+
+            const dosage = parseInt(dosageInput);
+
+            const bloodGlucoseChange = dosage * 50;
+            const decreasingRate = bloodGlucoseChange / 10;
+
+            let currentChange = 0;
+            const interval = setInterval(() => {
+              if (
+                currentChange >= bloodGlucoseChange ||
+                this.currentTime === 0 ||
+                (this.bloodGlucoseLevelValue < 70 || this.bloodGlucoseLevelValue > 180)
+              ) {
+                clearInterval(interval);
+                updateBloodGlucoseBar();
+                inputField.value = '';
+                errorLabel.textContent = '';
+                return;
+              }
+              this.bloodGlucoseLevelValue -= decreasingRate;
+              currentChange += decreasingRate;
+
+              // Update the blood glucose level text and bar
+              updateBloodGlucoseBar();
+            }, 2000);
+          } else {
+            errorLabel.textContent = 'Please enter a value above 0.';
+          }
+          this.collisionDetected = false;
+        });
+
+          // Remove the modal dialog
+          document.body.removeChild(modal);
+        });
+      
+        const discardButton = document.createElement('button');
+        discardButton.textContent = 'Discard';
+        discardButton.style.backgroundColor = '#ffffff';
+        discardButton.style.border = '1px solid #000000';
+        discardButton.style.borderRadius = '5px';
+        discardButton.style.padding = '10px 20px';
+        discardButton.style.cursor = 'pointer';
+        discardButton.addEventListener('click', () => {
+          document.body.removeChild(modal);
+          this.collisionDetected = false;
+        });
+      
+        dialog.appendChild(useButton);
+        dialog.appendChild(discardButton);
+        modal.appendChild(dialog);
+        document.body.appendChild(modal);
+      }
   }
   
   // Character class
@@ -527,24 +888,36 @@ class FoodItem {
   
   // Create sample food items
   const foodItems = [
-    new FoodItem('Orange', 'orange photo.jpg', 11, 42),
+    new FoodItem('Grapes', 'grape.png', 11, 42),
+    new FoodItem('Birthday Cake', 'birthday cake.png', 35, 70),
+    new FoodItem('Cheese', 'cheese.png', 0, 0),
+    new FoodItem('Doughnut', 'doughnut.png', 25, 70),
+    new FoodItem('Drumsticks', 'drumsticks.png', 0, 0),
+    new FoodItem('Fish', 'fish.png', 0, 0),
+    new FoodItem('Hamburger', 'hamburger.png', 50, 70),
+    new FoodItem('Orange Juice', 'juice.png', 28, 85),
+    new FoodItem('Omelette', 'omelette.png', 0, 0),
+    new FoodItem('Pizza', 'pizza.png', 75, 70),
+    new FoodItem('Popsicle', 'popsicle.png', 17, 70)
     // Add more food items as needed
   ];
   
   // InsulinItem class
 class InsulinItem {
-    constructor(name, imageSrc, unitsPerDose, type) {
+    constructor(name, type, imageSrc) {
       this.name = name;
-      this.imageSrc = imageSrc;
-      this.unitsPerDose = unitsPerDose;
       this.type = type;
+      this.imageSrc = imageSrc;
     }
   }
   
   // Create sample insulin items
   const insulinItems = [
-    new InsulinItem('Basal Insulin', 'basal-insulin.png', 10, 'basal'),
-    new InsulinItem('Bolus Insulin', 'bolus-insulin.png', 5, 'bolus'),
+    new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png'),
+    new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png'),
+    new InsulinItem('Toujeo', 'Long-Acting', 'injection mejorada.png'),
+    new InsulinItem('Lantus', 'Long-Acting', 'injection mejorada.png'),
+
     // Add more insulin items as needed
   ];
   
