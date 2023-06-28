@@ -204,13 +204,13 @@ class Game {
         const targetTop = barTop - targetHeight;
       
         // Position the min target to the left of the blood glucose container
-        const minTargetLeft = barLeft - targetWidth;
+        const minTargetLeft = barLeft - targetWidth + 40;
         this.minBloodGlucoseTarget.style.position = 'absolute';
         this.minBloodGlucoseTarget.style.left = `${minTargetLeft}px`;
         this.minBloodGlucoseTarget.style.top = `${targetTop}px`;
       
         // Position the max target to the right of the blood glucose container
-        const maxTargetLeft = barLeft + barWidth -40;
+        const maxTargetLeft = barLeft + barWidth +20;
         this.maxBloodGlucoseTarget.style.position = 'absolute';
         this.maxBloodGlucoseTarget.style.left = `${maxTargetLeft}px`;
         this.maxBloodGlucoseTarget.style.top = `${targetTop}px`;
