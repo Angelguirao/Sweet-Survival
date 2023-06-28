@@ -113,8 +113,8 @@ class Game {
         this.character.style.width = '80px';
         this.character.style.height = '80px';
         this.character.style.position = 'absolute';
-        this.character.style.left = Math.floor(Math.random() * (this.gameContainer.offsetWidth - 50)) + 'px';
-        this.character.style.top = Math.floor(Math.random() * (this.gameContainer.offsetHeight - 50)) + 'px';
+        this.character.style.left = '50%'; // Set left position to 50% of the container width
+        this.character.style.top = '50%'; // Set top position to 50% of the container height
     
         // Add the character element to the game container
         this.gameContainer.appendChild(this.character);
@@ -129,7 +129,7 @@ class Game {
         // Set the initial blood glucose level randomly within the desired range
         this.minBloodGlucoseLevel = 70; // Specify the minimum blood glucose level
         this.maxBloodGlucoseLevel = 180; // Specify the maximum blood glucose level
-        this.bloodGlucoseLevelValue = Math.floor(Math.random() * (this.maxBloodGlucoseLevel - this.minBloodGlucoseLevel + 1)) + this.minBloodGlucoseLevel;
+        this.bloodGlucoseLevelValue = 100;
 
          // Create the blood glucose bar
         this.bloodGlucoseBar = document.createElement('div');
@@ -284,8 +284,8 @@ class Game {
         this.timerElement.style.right = '10px';
 
         // Generate a random time limit between 30 seconds and 1 minute
-        const minTimeLimit = 120; // Minimum time limit in seconds
-        const maxTimeLimit = 180; // Maximum time limit in seconds
+        const minTimeLimit = 45; // Minimum time limit in seconds
+        const maxTimeLimit = 60; // Maximum time limit in seconds
         const randomTimeLimit = Math.floor(Math.random() * (maxTimeLimit - minTimeLimit + 1)) + minTimeLimit;
 
         this.currentTime = randomTimeLimit;
@@ -437,31 +437,26 @@ class Game {
         initializeFoodItems(maxFoodItems) {
           const shuffledFoodItems = this.shuffleArray(this.foodItems);
           const foodItemsToDisplay = shuffledFoodItems.slice(0, maxFoodItems);
-
+        
           // Clear the food item elements before rendering new ones
-         this.foodItemElements = [];
-
+          this.foodItemElements = [];
+        
           for (let i = 0; i < foodItemsToDisplay.length; i++) {
             const randomFoodItem = foodItemsToDisplay[i];
             const foodItem = document.createElement('img');
             foodItem.src = randomFoodItem.imageSrc;
             foodItem.style.width = '30px';
             foodItem.style.height = '30px';
-            const containerWidth = this.gameContainer.offsetWidth;
-            const containerHeight = this.gameContainer.offsetHeight;
-            const positionX = Math.floor(Math.random() * (containerWidth - 50));
-            const positionY = Math.floor(Math.random() * (containerHeight - 50));
             foodItem.style.position = 'absolute';
-            foodItem.style.left = positionX + 'px';
-            foodItem.style.top = positionY + 'px';
-      
+            foodItem.style.left = randomFoodItem.position.x + 'px'; // Use the position property
+            foodItem.style.top = randomFoodItem.position.y + 'px'; // Use the position property
+        
             // Set data attributes for food properties
             foodItem.dataset.name = randomFoodItem.name;
             foodItem.dataset.totalCarbs = randomFoodItem.totalCarbs;
             foodItem.dataset.glycemicIndex = randomFoodItem.glycemicIndex;
             foodItem.dataset.imageSrc = randomFoodItem.imageSrc;
-
-      
+        
             this.foodItemElements.push(foodItem); // Store the food item element separately
             this.gameContainer.appendChild(foodItem);
           }
@@ -488,15 +483,11 @@ class Game {
             const randomInsulinItem = insulinItemsToDisplay[i];
             const insulinItem = document.createElement('img');
             insulinItem.src = randomInsulinItem.imageSrc;
-            insulinItem.style.width = '30px';
-            insulinItem.style.height = '30px';
-            const containerWidth = this.gameContainer.offsetWidth;
-            const containerHeight = this.gameContainer.offsetHeight;
-            const positionX = Math.floor(Math.random() * (containerWidth - 50));
-            const positionY = Math.floor(Math.random() * (containerHeight - 50));
+            insulinItem.style.width = '35px';
+            insulinItem.style.height = '35px';
             insulinItem.style.position = 'absolute';
-            insulinItem.style.left = positionX + 'px';
-            insulinItem.style.top = positionY + 'px';
+            insulinItem.style.left = randomInsulinItem.position.x + 'px'; // Use the position property
+            insulinItem.style.top = randomInsulinItem.position.y + 'px'; // Use the position property
         
             // Set data attributes for insulin properties
             insulinItem.dataset.name = randomInsulinItem.name;
@@ -504,7 +495,6 @@ class Game {
             insulinItem.dataset.imageSrc = randomInsulinItem.imageSrc;
         
             this.insulinItemElements.push(insulinItem); // Store the insulin item element separately
-        
             this.gameContainer.appendChild(insulinItem);
           }
         }
@@ -915,6 +905,7 @@ class Game {
         this.dosageInput = inputField.value;
 
         if (this.validateInput(this.dosageInput)) {
+          
           //insulin dosage logic
 
           container.parentNode.removeChild(container);
@@ -974,51 +965,52 @@ class Game {
     }
   }
   
-  // FoodItem class
+// FoodItem class
 class FoodItem {
-    constructor(name, imageSrc, totalCarbs, glycemicIndex) {
-      this.name = name;
-      this.imageSrc = imageSrc;
-      this.totalCarbs = totalCarbs;
-      this.glycemicIndex = glycemicIndex;
-    }
+  constructor(name, imageSrc, totalCarbs, glycemicIndex, position) {
+    this.name = name;
+    this.imageSrc = imageSrc;
+    this.totalCarbs = totalCarbs;
+    this.glycemicIndex = glycemicIndex;
+    this.position = position;
   }
-  
-  // Create sample food items
-  const foodItems = [
-    new FoodItem('Grapes', 'grape.png', 11, 42),
-    new FoodItem('Birthday Cake', 'birthday cake.png', 35, 70),
-    new FoodItem('Cheese', 'cheese.png', 0, 0),
-    new FoodItem('Doughnut', 'doughnut.png', 25, 42),
-    new FoodItem('Drumsticks', 'drumsticks.png', 0, 0),
-    new FoodItem('Fish', 'fish.png', 0, 0),
-    new FoodItem('Hamburger', 'hamburger.png', 50, 70),
-    new FoodItem('Orange Juice', 'juice.png', 28, 85),
-    new FoodItem('Omelette', 'omelette.png', 0, 0),
-    new FoodItem('Pizza', 'pizza.png', 75, 70),
-    new FoodItem('Popsicle', 'popsicle.png', 17, 70)
-    // Add more food items as needed
-  ];
-  
-  // InsulinItem class
+}
+
+// Create sample food items with positions
+const foodItems = [
+  new FoodItem('Grapes', 'grape.png', 11, 42, { x: 50, y: 50 }),
+  new FoodItem('Birthday Cake', 'birthday cake.png', 35, 70, { x: 250, y: 50 }),
+  new FoodItem('Cheese', 'cheese.png', 0, 0, { x: 450, y: 50 }),
+  new FoodItem('Doughnut', 'doughnut.png', 25, 42, { x: 650, y: 50 }),
+  new FoodItem('Drumsticks', 'drumsticks.png', 0, 0, { x: 850, y: 50 }),
+  new FoodItem('Fish', 'fish.png', 0, 0, { x: 50, y: 150 }),
+  new FoodItem('Hamburger', 'hamburger.png', 50, 70, { x: 250, y: 150 }),
+  new FoodItem('Orange Juice', 'juice.png', 28, 85, { x: 450, y: 150 }),
+  new FoodItem('Omelette', 'omelette.png', 0, 0, { x: 650, y: 150 }),
+  new FoodItem('Pizza', 'pizza.png', 75, 70, { x: 50, y: 400 }),
+  new FoodItem('Popsicle', 'popsicle.png', 17, 70, { x: 250, y: 400 })
+  // Add more food items as needed
+];
+
+// InsulinItem class
 class InsulinItem {
-    constructor(name, type, imageSrc) {
-      this.name = name;
-      this.type = type;
-      this.imageSrc = imageSrc;
-    }
+  constructor(name, type, imageSrc, position) {
+    this.name = name;
+    this.type = type;
+    this.imageSrc = imageSrc;
+    this.position = position;
   }
-  
-  // Create sample insulin items
-  const insulinItems = [
-    new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png'),
-    new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png'),
-    new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png'),
-    new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png'),
-    new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png'),
-    new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png'),
-    // Add more insulin items as needed
-  ];
+}
+
+// Create sample insulin items with positions
+const insulinItems = [
+  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 50, y: 275 }),
+  new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png', { x: 250, y: 275 }),
+  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 450, y: 275 }),
+  new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png', { x: 650, y: 275 }),
+  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 850, y: 275 }),
+  // Add more insulin items as needed
+];
   
   // Create an instance of the Game class
   const game = new Game(foodItems, insulinItems);
