@@ -43,42 +43,57 @@ class Game {
     }
 
     showInstructions() {
-       // Create a container for the instructions
+      // Create a container for the instructions
       this.instructionsContainer = document.createElement('div');
       this.instructionsContainer.id = 'instructions';
-      this.instructionsContainer.style.backgroundColor = '#f9f9f9';
+      this.instructionsContainer.style.backgroundColor = 'black';
       this.instructionsContainer.style.border = '1px solid #ccc';
-      this.instructionsContainer.style.padding = '20px';
       this.instructionsContainer.style.borderRadius = '5px';
-      this.instructionsContainer.style.textAlign = 'center';
-      this.instructionsContainer.style.margin = '20px auto';
-      this.instructionsContainer.style.maxWidth = '500px';
-  
+      this.instructionsContainer.style.width = '800px';
+    
       // Create the content for the instructions
       const instructionsText = document.createElement('p');
-      instructionsText.innerHTML = "Welcome!<br><br> In this game, you will take control of a character living with type 1 diabetes.<br><br> The main objective is to collect healthy food items while avoiding unhealthy ones and administering insulin when necessary to maintain the character's blood glucose within a target range. <br><br>  If you successfully maintain yourself within the range until the countdown ends, you win!<br><br>If you go out of range at any point during the game, you lose!<br><br> Are you ready, sweety?";
       instructionsText.style.marginBottom = '20px';
-      instructionsText.style.fontSize = '24px'; // Increase the font size
+    
+      // Create the "Welcome" text with specific styles
+      const welcomeText = document.createElement('span');
+      welcomeText.innerHTML = 'Welcome!';
+      welcomeText.style.fontSize = '25px'; // Increase the font size
+      welcomeText.style.fontWeight = 'bold'; // Set the font weight to bold
+      welcomeText.style.color = 'white'; // Set the text color to white
+    
+      // Create the remaining text
+      const remainingText = document.createElement('span');
+      remainingText.innerHTML = "<br><br> In this game, you will take control of a character living with type 1 diabetes.<br><br> The main objective is to collect food items and administer insulin when necessary to maintain the character's blood glucose within a target range. <br><br>  If you successfully maintain yourself within the range until the countdown ends, you win! If you go out of range at any point during the game, you lose!<br><br> Are you ready, sweety?";
+      remainingText.style.fontSize = '24px';
+      remainingText.style.color = 'white';
 
+      // Append the welcome text and remaining text to the instructions content
+      instructionsText.appendChild(welcomeText);
+      instructionsText.appendChild(remainingText);
+    
       // Append the instructions content to the container
       this.instructionsContainer.appendChild(instructionsText);
-  
+    
       // Add the instructions container to the body
       document.body.appendChild(this.instructionsContainer);
     }
+    
   
     // Function to create the start button
       createStartButton() {
         this.startButton = document.createElement('button');
         this.startButton.textContent = "Let's go!";
         this.startButton.style.fontSize = '20px';
-        this.startButton.style.padding = '10px 20px';
+        this.startButton.style.padding = '10px 30px';
         this.startButton.style.marginTop = '20px';
+        this.startButton.style.marginBottom = '20px';
         this.startButton.style.border = 'none';
-        this.startButton.style.backgroundColor = '#4caf50';
-        this.startButton.style.color = '#fff';
+        this.startButton.style.backgroundColor = '#ffd2ed';
+        this.startButton.style.color = 'black';
         this.startButton.style.cursor = 'pointer';
-        this.startButton.style.borderRadius = '5px';
+        this.startButton.style.fontWeight = 'bold';
+
   
       // Append the start button to the instructions container
       this.instructionsContainer.appendChild(this.startButton);
@@ -109,6 +124,7 @@ class Game {
           // Initialize game components
           this.initializeCharacter();
           this.initializeBloodGlucoseBar();
+          this.initializeMinAndMaxTargets();
           this.initializeTimer();
           this.initializeFoodItems(100); // Set the maximum number of food items to display
           this.initializeInsulinItems(100); // Set the maximum number of insulin items to display
@@ -143,7 +159,6 @@ class Game {
          // Create the blood glucose bar
         this.bloodGlucoseBar = document.createElement('div');
         this.bloodGlucoseBar.style.height = '40px';
-        this.bloodGlucoseBar.style.width = '100%';
         this.bloodGlucoseBar.style.borderRadius = '5px';
         this.bloodGlucoseContainer.appendChild(this.bloodGlucoseBar);
 
@@ -152,79 +167,59 @@ class Game {
         this.bloodGlucoseLevelText.style.fontSize = '30px';
         this.bloodGlucoseLevelText.style.fontWeight = 'bold';
         this.bloodGlucoseLevelText.style.color = 'black';
-        this.bloodGlucoseLevelText.innerHTML = this.bloodGlucoseLevelValue;
         this.bloodGlucoseContainer.appendChild(this.bloodGlucoseLevelText);
-
-          // Create the blood glucose min and max targets
-          this.minBloodGlucoseTarget = document.createElement('div');
-          this.maxBloodGlucoseTarget = document.createElement('div');
-          this.minBloodGlucoseTarget.id = 'minBloodGlucoseTarget';
-          this.maxBloodGlucoseTarget.id = 'maxBloodGlucoseTarget';
-          this.bloodGlucoseContainer.appendChild(this.minBloodGlucoseTarget);
-          this.bloodGlucoseContainer.appendChild(this.maxBloodGlucoseTarget);
-          this.minBloodGlucoseTarget.style.width = '50px';
-          this.minBloodGlucoseTarget.style.height = '50px';
-          this.minBloodGlucoseTarget.style.backgroundColor = 'white';
-          this.minBloodGlucoseTarget.style.color = 'red';
-          this.minBloodGlucoseTarget.style.fontSize = '50px';
-          this.minBloodGlucoseTarget.style.fontWeight = 'bold';
-
-          this.maxBloodGlucoseTarget.style.width = '50px';
-          this.maxBloodGlucoseTarget.style.height = '50px';
-          this.maxBloodGlucoseTarget.style.backgroundColor = 'white';
-          this.maxBloodGlucoseTarget.style.color = 'red';
-          this.maxBloodGlucoseTarget.style.fontSize = '50px';
-          this.maxBloodGlucoseTarget.style.fontWeight = 'bold';
-
-          // Calculate the displayed minimum and maximum values
-          const displayedMinValue = this.minBloodGlucoseLevel;
-          const displayedMaxValue = this.maxBloodGlucoseLevel;
-
-          // Create text nodes for the minimum and maximum values with smaller font size
-          const minText = document.createElement('span');
-          minText.style.fontSize = '20px';
-          minText.style.marginBottom = '5px';
-          minText.textContent = `${displayedMinValue}(min.)`;
-
-          const maxText = document.createElement('span');
-          maxText.style.fontSize = '20px';
-          maxText.style.marginBottom = '5px';
-          maxText.textContent = `${displayedMaxValue}(max.)`;
-
-          // Append the text nodes to the min and max targets
-          this.minBloodGlucoseTarget.appendChild(minText);
-          this.maxBloodGlucoseTarget.appendChild(maxText);
-
-         // Position the blood glucose min and max targets
-        this.positionBloodGlucoseTargets();
-
-        // Update the blood glucose bar based on the initial level
-        this.updateBloodGlucoseBar();
       }
 
-      positionBloodGlucoseTargets() {
-        const barWidth = this.bloodGlucoseBar.offsetWidth;
-        const barLeft = this.bloodGlucoseBar.offsetLeft;
-        const barTop = this.bloodGlucoseBar.offsetTop;
-      
-        // Calculate the position of the targets relative to the blood glucose bar
-        const targetWidth = this.minBloodGlucoseTarget.offsetWidth;
-        const targetHeight = this.minBloodGlucoseTarget.offsetHeight;
-        const targetTop = barTop - targetHeight;
-      
-        // Position the min target to the left of the blood glucose container
-        const minTargetLeft = barLeft - targetWidth + 40;
-        this.minBloodGlucoseTarget.style.position = 'absolute';
-        this.minBloodGlucoseTarget.style.left = `${minTargetLeft}px`;
-        this.minBloodGlucoseTarget.style.top = `${targetTop}px`;
-      
-        // Position the max target to the right of the blood glucose container
-        const maxTargetLeft = barLeft + barWidth +20;
-        this.maxBloodGlucoseTarget.style.position = 'absolute';
-        this.maxBloodGlucoseTarget.style.left = `${maxTargetLeft}px`;
-        this.maxBloodGlucoseTarget.style.top = `${targetTop}px`;
+      initializeMinAndMaxTargets() {
+        
+        // Create a container for the min and max targets
+        const targetsContainer = document.createElement('div');
+        targetsContainer.id = 'bloodGlucoseTargetsContainer';
+        this.bloodGlucoseContainer.appendChild(targetsContainer);
+              
+        // Create the blood glucose min and max targets
+        this.minBloodGlucoseTarget = document.createElement('div');
+        this.maxBloodGlucoseTarget = document.createElement('div');
+        this.minBloodGlucoseTarget.id = 'minBloodGlucoseTarget';
+        this.maxBloodGlucoseTarget.id = 'maxBloodGlucoseTarget';
+        targetsContainer.appendChild(this.minBloodGlucoseTarget);
+        targetsContainer.appendChild(this.maxBloodGlucoseTarget);
+
+        // Calculate the displayed minimum and maximum values
+        const displayedMinValue = 70;
+        const displayedMaxValue = 180;
+
+        // Create text nodes for the minimum and maximum values with smaller font size
+        const minText = document.createElement('span');
+        minText.style.fontSize = '20px';
+        minText.style.marginBottom = '5px';
+        minText.textContent = `${displayedMinValue}(min.)`;
+
+        const maxText = document.createElement('span');
+        maxText.style.fontSize = '20px';
+        maxText.style.marginBottom = '5px';
+        maxText.textContent = `${displayedMaxValue}(max.)`;
+
+        // Append the text nodes to the min and max targets
+        this.minBloodGlucoseTarget.appendChild(minText);
+        this.maxBloodGlucoseTarget.appendChild(maxText);
       }
+
+      updateBloodGlucoseLevel() {
+        if (!this.playerAteFood && !this.playerInjectedInsulin) {
+
+          // Update the blood glucose level based on the stored direction
+          if (this.bloodGlucoseDirection === 'increase') {
+            this.bloodGlucoseLevelValue += this.fluctuationRate;
+          } else {
+            this.bloodGlucoseLevelValue -= this.fluctuationRate;
+          }
       
+           // Update the blood glucose level text
+          this.bloodGlucoseLevelText.innerHTML = `<span class="blood-glucose-value">${this.bloodGlucoseLevelValue}</span><span class="blood-glucose-unit">  (Your actual blood glucose in mg/dl)</span>`;
+                }
+      }
+
       updateBloodGlucoseBar() {
         const fullWidth = this.gameContainer.offsetWidth;
         const levelPercentage = (this.bloodGlucoseLevelValue - this.minBloodGlucoseLevel) / (this.maxBloodGlucoseLevel - this.minBloodGlucoseLevel);
@@ -242,39 +237,17 @@ class Game {
           } else if (this.bloodGlucoseLevelValue >= 160 && this.bloodGlucoseLevelValue <= 180) {
             this.bloodGlucoseBar.style.backgroundColor = 'red';
           } else {
-            this.bloodGlucoseBar.style.backgroundColor = 'black';
+            this.bloodGlucoseBar.style.backgroundColor = 'white';
           }
-
-        this.bloodGlucoseLevelText.innerHTML = this.bloodGlucoseLevelValue;
 
         // Position the blood glucose level text to the right of the blood glucose bar
         const barRight = this.bloodGlucoseBar.offsetLeft + currentWidth;
         const textLeft = barRight + 10; // Add some extra spacing
 
-        // Update the blood glucose level text
-        this.bloodGlucoseLevelText.innerHTML = `<span class="blood-glucose-value">${this.bloodGlucoseLevelValue}</span><span class="blood-glucose-unit">  (your actual blood glucose in mg/dl)</span>`;
-
         this.bloodGlucoseLevelText.style.position = 'absolute';
         this.bloodGlucoseLevelText.style.left = `${textLeft}px`;
         this.bloodGlucoseLevelText.style.top = this.bloodGlucoseBar.offsetTop + 'px';
-      }
-
-      updateBloodGlucoseLevel() {
-        if (!this.playerAteFood && !this.playerInjectedInsulin) {
-
-          // Update the blood glucose level based on the stored direction
-          if (this.bloodGlucoseDirection === 'increase') {
-            this.bloodGlucoseLevelValue += this.fluctuationRate;
-          } else {
-            this.bloodGlucoseLevelValue -= this.fluctuationRate;
-          }
-      
-          // Update the blood glucose level text
-          this.bloodGlucoseLevelText.innerHTML = this.bloodGlucoseLevelValue;
-      
-          // Update the blood glucose bar
-          this.updateBloodGlucoseBar();
-        }
+        this.bloodGlucoseLevelText.innerHTML = `<span class="blood-glucose-value">${this.bloodGlucoseLevelValue}</span><span class="blood-glucose-unit">  (Your actual blood glucose in mg/dl)</span>`;
       }
 
       initializeTimer() {
@@ -306,14 +279,15 @@ class Game {
         this.startCountdown();
 
         // Start updating the blood glucose level at regular intervals
-        this.bloodGlucoseUpdateInterval = setInterval(() => {
-          this.updateBloodGlucoseLevel();
-        }, 2000);
 
+        this.updateBloodGlucoseLevel();
+        this.updateBloodGlucoseBar();
         }
 
         startCountdown() {
           this.timerInterval = setInterval(() => {
+            this.updateBloodGlucoseLevel();
+            this.updateBloodGlucoseBar();
             this.currentTime--;
 
             // Update the timer element with the current time
@@ -359,18 +333,18 @@ class Game {
 
           // Create the outcome screen container
           const outcomeContainer = document.createElement('div');
-          outcomeContainer.style.backgroundColor = '#f9f9f9';
+          outcomeContainer.style.backgroundColor = 'black';
           outcomeContainer.style.border = '1px solid #ccc';
-          outcomeContainer.style.padding = '20px';
           outcomeContainer.style.borderRadius = '5px';
           outcomeContainer.style.textAlign = 'center';
-          outcomeContainer.style.margin = '20px auto';
-          outcomeContainer.style.maxWidth = '500px';
+          outcomeContainer.style.width = '800px';
+          outcomeContainer.style.marginTop = '200px';
 
           // Create the outcome message based on the game result
           const outcomeMessage = document.createElement('p');
           outcomeMessage.style.fontSize = '24px';
-          outcomeMessage.style.fontWeight = 'bold';
+          outcomeMessage.style.color = 'white';
+          outcomeMessage.style.marginTop = '50px'
 
           if (isWin) {
             this.winningMusic.play()
@@ -382,15 +356,17 @@ class Game {
 
           // Create the restart button
           const restartButton = document.createElement('button');
-          restartButton.textContent = 'Restart';
+          restartButton.textContent = 'Again!';
           restartButton.style.fontSize = '20px';
-          restartButton.style.padding = '10px 20px';
-          restartButton.style.marginTop = '20px';
+          restartButton.style.padding = '10px 30px';
+          restartButton.style.marginTop = '15px';
+          restartButton.style.marginBottom = '40px';
           restartButton.style.border = 'none';
-          restartButton.style.backgroundColor = '#4caf50';
-          restartButton.style.color = '#fff';
+          restartButton.style.backgroundColor = '#ffd2ed';
+          restartButton.style.color = 'black'
           restartButton.style.cursor = 'pointer';
           restartButton.style.borderRadius = '5px';
+          this.startButton.style.fontWeight = 'bold';
 
           // Add event listener to restart button
           restartButton.addEventListener('click', () => {
@@ -446,6 +422,7 @@ class Game {
 
           this.initializeCharacter();
           this.initializeTimer();
+          this.initializeMinAndMaxTargets();
           this.initializeBloodGlucoseBar();
           this.initializeFoodItems(100);
           this.initializeInsulinItems(100);
@@ -649,18 +626,22 @@ class Game {
         title.style.marginTop = '0';
         title.style.marginBottom = '10px';
         title.textContent = 'Food Item';
+        title.style.textAlign = 'center';
 
         const foodName = document.createElement('p');
-        foodName.style.marginTop = '0';
+        foodName.style.marginTop = '25px';
         foodName.textContent = `Name: ${name}`;
+        foodName.style.marginLeft = '10px';
 
         const carbs = document.createElement('p');
         carbs.style.marginTop = '0';
         carbs.textContent = `Total Carbs: ${totalCarbs}`;
+        carbs.style.marginLeft = '10px';
 
         const glycemic = document.createElement('p');
         glycemic.style.marginTop = '0';
         glycemic.textContent = `Glycemic Index: ${glycemicIndex}`;
+        glycemic.style.marginLeft = '10px';
 
         // Information icon for carbohydrates
         const carbsInfoIcon = document.createElement('span');
@@ -716,11 +697,14 @@ class Game {
         
           const eatButton = document.createElement('button');
           eatButton.textContent = 'Eat';
-          eatButton.style.backgroundColor = '#ffffff';
+          eatButton.style.width = '90px';
+          eatButton.style.backgroundColor = '#ffd2ed';
           eatButton.style.border = '1px solid #000000';
           eatButton.style.borderRadius = '5px';
           eatButton.style.padding = '10px 20px';
           eatButton.style.cursor = 'pointer';
+          eatButton.style.marginRight = '20px';
+          eatButton.style.marginLeft = '20px';
           eatButton.addEventListener('click', () => {
             const totalCarbsIntake = parseInt(totalCarbs);
             const glycemicIndexIntake = parseInt(glycemicIndex);
@@ -761,11 +745,12 @@ class Game {
 
         const closeButton = document.createElement('button');
           closeButton.textContent = 'Discard';
-          closeButton.style.backgroundColor = '#ffffff';
+          closeButton.style.backgroundColor = '#ffd2ed';
           closeButton.style.border = '1px solid #000000';
           closeButton.style.borderRadius = '5px';
           closeButton.style.padding = '10px 20px';
           closeButton.style.cursor = 'pointer';
+          closeButton.style.marginRight = '20px'
           closeButton.addEventListener('click', () => {
             document.body.removeChild(modal);
             this.collisionDetected = false;
@@ -844,11 +829,12 @@ class Game {
 
         const discardButton = document.createElement('button');
         discardButton.textContent = 'Discard';
-        discardButton.style.backgroundColor = '#ffffff';
+        discardButton.style.backgroundColor = '#ffd2ed';
         discardButton.style.border = '1px solid #000000';
         discardButton.style.borderRadius = '5px';
         discardButton.style.padding = '10px 20px';
         discardButton.style.cursor = 'pointer';
+        discardButton.style.marginRight = '20px'
         discardButton.addEventListener('click', () => {
           document.body.removeChild(modal); // Remove the modal dialog
           this.collisionDetected = false;
@@ -856,11 +842,14 @@ class Game {
 
         const useButton = document.createElement('button');
         useButton.textContent = 'Use';
-        useButton.style.backgroundColor = '#ffffff';
+        useButton.style.width = '90px';
+        useButton.style.backgroundColor = '#ffd2ed';
         useButton.style.border = '1px solid #000000';
         useButton.style.borderRadius = '5px';
         useButton.style.padding = '10px 20px';
         useButton.style.cursor = 'pointer';
+        useButton.style.marginRight = '20px';
+        useButton.style.marginLeft = '20px';
         useButton.addEventListener('click', () => {
               
         // Create the container for the dosage insulin input
@@ -896,9 +885,15 @@ class Game {
 
         const submitButton = document.createElement('button');
         submitButton.textContent = 'Inject';
-        submitButton.style.marginLeft = '10px';
-        submitButton.style.margin = '0 auto';
+        submitButton.style.width = '90px';
+        submitButton.style.backgroundColor = '#ffd2ed';
+        submitButton.style.border = '1px solid #000000';
+        submitButton.style.borderRadius = '5px';
+        submitButton.style.padding = '10px 20px';
+        submitButton.style.cursor = 'pointer';
+        submitButton.style.marginTop = '10px';
 
+    
         const errorLabel = document.createElement('p');
         errorLabel.style.color = 'red';
 
@@ -1008,8 +1003,12 @@ const foodItems = [
   new FoodItem('Hamburger', 'hamburger.png', 50, 70, { x: 250, y: 175 }),
   new FoodItem('Orange Juice', 'juice.png', 28, 85, { x: 450, y: 175 }),
   new FoodItem('Omelette', 'omelette.png', 0, 0, { x: 650, y: 175 }),
+  new FoodItem('Shrimp', 'shrimp.png', 0, 0, { x: 850, y: 175 }),
   new FoodItem('Pizza', 'pizza.png', 75, 70, { x: 50, y: 425 }),
-  new FoodItem('Popsicle', 'popsicle.png', 17, 70, { x: 250, y: 425 })
+  new FoodItem('Popsicle', 'popsicle.png', 17, 70, { x: 250, y: 425 }),
+  new FoodItem('Chocolate', 'choco.png', 17, 70, { x: 450, y: 425 }),
+  new FoodItem('Fries', 'fries.png', 17, 60, { x: 650, y: 425 }),
+  new FoodItem('Icrecream', 'icecream.png', 17, 60, { x: 850, y: 425 })
   // Add more food items as needed
 ];
 

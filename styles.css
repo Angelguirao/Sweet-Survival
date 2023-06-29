@@ -1,3 +1,7 @@
+* {
+  font-family: "Courier New", monospace;
+}
+
 body {
     background-color: white;
     display: flex;
@@ -7,32 +11,32 @@ body {
   }
   
   h1 {
-    font-size: 50px;
-    text-align: center;
-    color:grey;
-    padding: 20px;
-  }
+    background-image: url('sweet.png');
+    width: 800px;
+    height: 57.41px;
+    margin-top: 70px;
+    }
   
   #gameContainer {
     background-image: url('Escena.png');
     width: 1000px;
     height: 500px;
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     position: relative;
+    margin-top: 40px;
   }
 
   #bloodGlucoseContainer {
     display: flex;
-    width: 1000px;
-    height: 200px;
-    margin-top: 100px;
+    flex-direction: column-reverse;
+    margin-top: 40px;
   }
 
-  #minBloodGlucoseTarget {
-    position: absolute;
-    left: 0;
-    top: 0;
+  #bloodGlucoseTargetsContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
   }
 
   #instructions {
