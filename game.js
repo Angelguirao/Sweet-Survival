@@ -4,7 +4,14 @@ class Game {
       // Initialize game components
       this.gameContainer = document.getElementById('gameContainer');
       this.bloodGlucoseContainer = document.getElementById('bloodGlucoseContainer');
+      this.backgroundAudio = new Audio('man-is-he-mega-glbml-22045.mp3');
+      this.backgroundAudio.loop = true;
+      this.eatSound = new Audio('eating-sound-effect-36186.mp3');
+      this.insulinSound = new Audio('089048_woosh-slide-in-88642.mp3');
+      this.winningMusic = new Audio('8-bit-video-game-win-level-sound-version-1-145827.mp3');
+      this.losingMusic = new Audio('8-bit-video-game-lose-sound-version-4-145477.mp3');
 
+      
       // Store the food items and insulin items
 
       this.foodItems = foodItems; // Assign food items to the property
@@ -63,7 +70,7 @@ class Game {
     // Function to create the start button
       createStartButton() {
         this.startButton = document.createElement('button');
-        this.startButton.textContent = 'Yes!';
+        this.startButton.textContent = "Let's go!";
         this.startButton.style.fontSize = '20px';
         this.startButton.style.padding = '10px 20px';
         this.startButton.style.marginTop = '20px';
@@ -87,6 +94,8 @@ class Game {
 
         // Add event listener to start button
         this.startButton.addEventListener('click', () => {
+          
+          this.backgroundAudio.play();
           
           // Remove the start button
           this.instructionsContainer.removeChild(this.startButton);
@@ -314,12 +323,16 @@ class Game {
             // Check if the blood glucose level is within the desired range (80-180)
             if (this.bloodGlucoseLevelValue < 70 || this.bloodGlucoseLevelValue > 180) {
               // Player loses if blood glucose is outside the range
+              this.backgroundAudio.pause();
+              this.backgroundAudio.currentTime = 0;
               this.showOutcomeScreen(false);
               clearInterval(this.timerInterval);
             }        
               // Check if the timer has reached 0
             if (this.currentTime === 0) {
               // Stop the timer interval
+              this.backgroundAudio.pause();
+              this.backgroundAudio.currentTime = 0;
               clearInterval(this.timerInterval);
 
               // Check the game outcome
@@ -344,7 +357,6 @@ class Game {
           this.gameContainer.style.display = 'none';
           this.bloodGlucoseContainer.style.display = 'none';
 
-
           // Create the outcome screen container
           const outcomeContainer = document.createElement('div');
           outcomeContainer.style.backgroundColor = '#f9f9f9';
@@ -361,8 +373,10 @@ class Game {
           outcomeMessage.style.fontWeight = 'bold';
 
           if (isWin) {
+            this.winningMusic.play()
             outcomeMessage.textContent = 'Congratulations! You are a blood glucose master!';
           } else {
+            this.losingMusic.play()
             outcomeMessage.textContent = 'Oops! Your blood glucose is out of range!';
           }
 
@@ -406,6 +420,9 @@ class Game {
           
           this.foodItems = foodItems; 
           this.insulinItems = insulinItems; 
+
+          this.backgroundAudio.loop = true;
+          this.backgroundAudio.play();
         
           this.timerInterval = null; // Store reference to the timer interval
           this.bloodGlucoseUpdateInterval = null; // Store reference to the blood glucose update interval
@@ -731,7 +748,10 @@ class Game {
               // Update the blood glucose level text and bar
               this.updateBloodGlucoseBar();
             }, 1000);
-          
+
+            // Play the sound
+            this.eatSound.play();
+
             // Remove the modal dialog
             document.body.removeChild(modal);
 
@@ -901,7 +921,8 @@ class Game {
           }
         
         // Define the logic for the submit button click event
-      submitButton.addEventListener('click', () => {
+        submitButton.addEventListener('click', () => {
+        this.insulinSound.play();
         this.dosageInput = inputField.value;
 
         if (this.validateInput(this.dosageInput)) {
@@ -983,12 +1004,12 @@ const foodItems = [
   new FoodItem('Cheese', 'cheese.png', 0, 0, { x: 450, y: 50 }),
   new FoodItem('Doughnut', 'doughnut.png', 25, 42, { x: 650, y: 50 }),
   new FoodItem('Drumsticks', 'drumsticks.png', 0, 0, { x: 850, y: 50 }),
-  new FoodItem('Fish', 'fish.png', 0, 0, { x: 50, y: 150 }),
-  new FoodItem('Hamburger', 'hamburger.png', 50, 70, { x: 250, y: 150 }),
-  new FoodItem('Orange Juice', 'juice.png', 28, 85, { x: 450, y: 150 }),
-  new FoodItem('Omelette', 'omelette.png', 0, 0, { x: 650, y: 150 }),
-  new FoodItem('Pizza', 'pizza.png', 75, 70, { x: 50, y: 400 }),
-  new FoodItem('Popsicle', 'popsicle.png', 17, 70, { x: 250, y: 400 })
+  new FoodItem('Fish', 'fish.png', 0, 0, { x: 50, y: 175 }),
+  new FoodItem('Hamburger', 'hamburger.png', 50, 70, { x: 250, y: 175 }),
+  new FoodItem('Orange Juice', 'juice.png', 28, 85, { x: 450, y: 175 }),
+  new FoodItem('Omelette', 'omelette.png', 0, 0, { x: 650, y: 175 }),
+  new FoodItem('Pizza', 'pizza.png', 75, 70, { x: 50, y: 425 }),
+  new FoodItem('Popsicle', 'popsicle.png', 17, 70, { x: 250, y: 425 })
   // Add more food items as needed
 ];
 
@@ -1004,11 +1025,11 @@ class InsulinItem {
 
 // Create sample insulin items with positions
 const insulinItems = [
-  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 50, y: 275 }),
-  new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png', { x: 250, y: 275 }),
-  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 450, y: 275 }),
-  new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png', { x: 650, y: 275 }),
-  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 850, y: 275 }),
+  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 50, y: 300 }),
+  new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png', { x: 250, y: 300 }),
+  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 450, y: 300 }),
+  new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png', { x: 650, y: 300 }),
+  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 850, y: 300 }),
   // Add more insulin items as needed
 ];
   
