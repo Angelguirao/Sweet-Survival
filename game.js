@@ -134,7 +134,7 @@ class Game {
       initializeCharacter() {
         // Create an <img> element for the character
         this.character = document.createElement('img');
-        this.character.src = 'down_1.png'; // Set the initial image
+        this.character.src = 'styles/assets/down_1.png'; // Set the initial image
         this.character.style.width = '80px';
         this.character.style.height = '80px';
         this.character.style.position = 'absolute';
@@ -519,30 +519,30 @@ class Game {
         
         if (event.keyCode === 37 && characterLeft > 0) {
           if (this.imageFlag === 1) {
-              this.character.src = 'left_2.png';
+              this.character.src = 'styles/assets/left_2.png';
           } else {
-              this.character.src = 'left_1.png';
+              this.character.src = 'styles/assets/left_1.png';
           }
           this.character.style.left = Math.max(characterLeft - step, 0) + 'px';
       } else if (event.keyCode === 39 && characterLeft + characterRect.width < containerWidth) {
           if (this.imageFlag === 1) {
-              this.character.src = 'right_1.png';
+              this.character.src = 'styles/assets/right_1.png';
           } else {
-              this.character.src = 'right_2.png';
+              this.character.src = 'styles/assets/right_2.png';
           }
           this.character.style.left = Math.min(characterLeft + step, containerWidth - characterRect.width) + 'px';
       } else if (event.keyCode === 38 && characterTop > 0) {
           if (this.imageFlag === 1) {
-              this.character.src = 'up_1.png';
+              this.character.src = 'styles/assets/up_1.png';
           } else {
-              this.character.src = 'up_2.png';
+              this.character.src = 'styles/assets/up_2.png';
           }
           this.character.style.top = Math.max(characterTop - step, 0) + 'px';
       } else if (event.keyCode === 40 && characterTop + characterRect.height < containerHeight) {
           if (this.imageFlag === 1) {
-              this.character.src = 'down_1.png';
+              this.character.src = 'styles/assets/down_1.png';
           } else {
-              this.character.src = 'down_2.png';
+              this.character.src = 'styles/assets/down_2.png';
           }
           this.character.style.top = Math.min(characterTop + step, containerHeight - characterRect.height) + 'px';
       }
@@ -975,12 +975,6 @@ class Game {
   }
 }
   
-  // Character class
-  class Character {
-    constructor() {
-    }
-  }
-  
 // FoodItem class
 class FoodItem {
   constructor(name, imageSrc, totalCarbs, glycemicIndex, position) {
@@ -994,21 +988,21 @@ class FoodItem {
 
 // Create sample food items with positions
 const foodItems = [
-  new FoodItem('Grapes', 'grape.png', 11, 42, { x: 50, y: 50 }),
-  new FoodItem('Birthday Cake', 'birthday cake.png', 35, 70, { x: 250, y: 50 }),
-  new FoodItem('Cheese', 'cheese.png', 0, 0, { x: 450, y: 50 }),
-  new FoodItem('Doughnut', 'doughnut.png', 25, 42, { x: 650, y: 50 }),
-  new FoodItem('Drumsticks', 'drumsticks.png', 0, 0, { x: 850, y: 50 }),
-  new FoodItem('Fish', 'fish.png', 0, 0, { x: 50, y: 175 }),
-  new FoodItem('Hamburger', 'hamburger.png', 50, 70, { x: 250, y: 175 }),
-  new FoodItem('Orange Juice', 'juice.png', 28, 85, { x: 450, y: 175 }),
-  new FoodItem('Omelette', 'omelette.png', 0, 0, { x: 650, y: 175 }),
-  new FoodItem('Shrimp', 'shrimp.png', 0, 0, { x: 850, y: 175 }),
-  new FoodItem('Pizza', 'pizza.png', 75, 70, { x: 50, y: 425 }),
-  new FoodItem('Popsicle', 'popsicle.png', 17, 70, { x: 250, y: 425 }),
-  new FoodItem('Chocolate', 'choco.png', 17, 70, { x: 450, y: 425 }),
-  new FoodItem('Fries', 'fries.png', 17, 60, { x: 650, y: 425 }),
-  new FoodItem('Icrecream', 'icecream.png', 17, 60, { x: 850, y: 425 })
+  new FoodItem('Grapes', 'styles/assets/grape.png', 11, 42, { x: 50, y: 50 }),
+  new FoodItem('Birthday Cake', 'styles/assets/birthday cake.png', 35, 70, { x: 250, y: 50 }),
+  new FoodItem('Cheese', 'styles/assets/cheese.png', 0, 0, { x: 450, y: 50 }),
+  new FoodItem('Doughnut', 'styles/assets/doughnut.png', 25, 42, { x: 650, y: 50 }),
+  new FoodItem('Drumsticks', 'styles/assets/drumsticks.png', 0, 0, { x: 850, y: 50 }),
+  new FoodItem('Fish', 'styles/assets/fish.png', 0, 0, { x: 50, y: 175 }),
+  new FoodItem('Hamburger', 'styles/assets/hamburger.png', 50, 70, { x: 250, y: 175 }),
+  new FoodItem('Orange Juice', 'styles/assets/juice.png', 28, 85, { x: 450, y: 175 }),
+  new FoodItem('Omelette', 'styles/assets/omelette.png', 0, 0, { x: 650, y: 175 }),
+  new FoodItem('Shrimp', 'styles/assets/shrimp.png', 0, 0, { x: 850, y: 175 }),
+  new FoodItem('Pizza', 'styles/assets/pizza.png', 75, 70, { x: 50, y: 425 }),
+  new FoodItem('Popsicle', 'styles/assets/popsicle.png', 17, 70, { x: 250, y: 425 }),
+  new FoodItem('Chocolate', 'styles/assets/choco.png', 17, 70, { x: 450, y: 425 }),
+  new FoodItem('Fries', 'styles/assets/fries.png', 17, 60, { x: 650, y: 425 }),
+  new FoodItem('Icrecream', 'styles/assets/icecream.png', 17, 60, { x: 850, y: 425 })
   // Add more food items as needed
 ];
 
@@ -1024,11 +1018,11 @@ class InsulinItem {
 
 // Create sample insulin items with positions
 const insulinItems = [
-  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 50, y: 300 }),
-  new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png', { x: 250, y: 300 }),
-  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 450, y: 300 }),
-  new InsulinItem('Novorapid', 'Fast-Acting', 'injection mejorada.png', { x: 650, y: 300 }),
-  new InsulinItem('Humalog', 'Fast-Acting', 'injection mejorada.png', { x: 850, y: 300 }),
+  new InsulinItem('Humalog', 'Fast-Acting', 'styles/assets/injection mejorada.png', { x: 50, y: 300 }),
+  new InsulinItem('Novorapid', 'Fast-Acting', 'styles/assets/injection mejorada.png', { x: 250, y: 300 }),
+  new InsulinItem('Humalog', 'Fast-Acting', 'styles/assets/injection mejorada.png', { x: 450, y: 300 }),
+  new InsulinItem('Novorapid', 'Fast-Acting', 'styles/assets/injection mejorada.png', { x: 650, y: 300 }),
+  new InsulinItem('Humalog', 'Fast-Acting', 'styles/assets/injection mejorada.png', { x: 850, y: 300 }),
   // Add more insulin items as needed
 ];
   

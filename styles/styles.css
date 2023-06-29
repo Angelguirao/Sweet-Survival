@@ -11,14 +11,14 @@ body {
   }
   
   h1 {
-    background-image: url('sweet.png');
+    background-image: url('./assets/sweet.png');
     width: 800px;
     height: 57.41px;
     margin-top: 70px;
     }
   
   #gameContainer {
-    background-image: url('Escena.png');
+    background-image: url('./assets/Escena.png');
     width: 1000px;
     height: 500px;
     border-radius: 5px;
