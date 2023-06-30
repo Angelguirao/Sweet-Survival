@@ -4,12 +4,12 @@ class Game {
       // Initialize game components
       this.gameContainer = document.getElementById('gameContainer');
       this.bloodGlucoseContainer = document.getElementById('bloodGlucoseContainer');
-      this.backgroundAudio = new Audio('man-is-he-mega-glbml-22045.mp3');
+      this.backgroundAudio = new Audio('styles/assets/man-is-he-mega-glbml-22045.mp3');
       this.backgroundAudio.loop = true;
-      this.eatSound = new Audio('eating-sound-effect-36186.mp3');
-      this.insulinSound = new Audio('089048_woosh-slide-in-88642.mp3');
-      this.winningMusic = new Audio('8-bit-video-game-win-level-sound-version-1-145827.mp3');
-      this.losingMusic = new Audio('8-bit-video-game-lose-sound-version-4-145477.mp3');
+      this.eatSound = new Audio('styles/assets/eating-sound-effect-36186.mp3');
+      this.insulinSound = new Audio('styles/assets/089048_woosh-slide-in-88642.mp3');
+      this.winningMusic = new Audio('styles/assets/8-bit-video-game-win-level-sound-version-1-145827.mp3');
+      this.losingMusic = new Audio('styles/assets/8-bit-video-game-lose-sound-version-4-145477.mp3');
 
       
       // Store the food items and insulin items
