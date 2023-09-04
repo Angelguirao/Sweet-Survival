@@ -1,4 +1,4 @@
-# sweetSurvival
+# Sweet Survival
 
 [Click here to see deployed game](https://angelguirao.github.io/sweetSurvival/)
 
