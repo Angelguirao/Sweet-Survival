@@ -1,6 +1,10 @@
+<p align="center">
+  <img src= "https://github.com/Angelguirao/Sweet-Survival/assets/44321245/54e2eb6f-ab18-4549-979e-727d3546d24e" >
+</p>
+
 # Sweet Survival
 
-[Click here to see deployed game](https://angelguirao.github.io/sweetSurvival/)
+[Click here to see deployed game](https://angelguirao.github.io/Sweet-Survival/)
 
 ## Description
 
